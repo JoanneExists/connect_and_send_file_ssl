@@ -8,3 +8,9 @@ $ chmod +x connect_and_send_file_ssl.py
 $ ./connect_and_send_file_ssl -h
 ```
 This will call the script with the 'help' flag for info on how to use the script.
+If you need the required packages installed, then run in the same directory as the script:
+```
+$ pip install pipreqs
+$ pipreqs .
+$ pip install -r requirements.txt
+```
