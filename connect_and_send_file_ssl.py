@@ -36,7 +36,7 @@ def scan_ports(hostname, ll, ul):
     return open_ports
 # sends file over ssl to server
 def send_file(filepath, hostname, ports):
-    context = ssl.SSLContext(ssl.PROTOCOL_SSLv23)
+    context = ssl.SSLContext(ssl.PROTOCOL_TLS)
     print(certifi.where())
     context.load_verify_locations(certifi.where())
     for port in ports:
@@ -45,17 +45,16 @@ def send_file(filepath, hostname, ports):
                                      server_hostname=hostname,
                                      suppress_ragged_eofs=True
                                      ) as c:
-                cert_chain = c.getpeercert(True)
                 v = c.version()
                 if v:
                     print(f"SSL Version is {v}")
                 try:
                     with open(filepath, "rb") as f:
                         while True:
-                            file_to_send = f.read(BUFFER_SIZE)
-                            if not file_to_send:
+                            bytes_to_send = f.read(BUFFER_SIZE)
+                            if not bytes_to_send:
                                 break
-                            c.sendall(file_to_send)
+                            c.sendall(bytes_to_send)
                 except ssl.SSLError as e:
                     print(f"Error sending file: {e}")
                 while True:
