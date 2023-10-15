@@ -14,3 +14,7 @@ $ pip install pipreqs
 $ pipreqs .
 $ pip install -r requirements.txt
 ```
+If you need to install pip on Ubuntu, run:
+```
+$ sudo apt install python3-pip
+```
