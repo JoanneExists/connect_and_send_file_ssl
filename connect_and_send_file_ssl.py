@@ -36,8 +36,6 @@ def scan_ports(hostname, ll, ul):
     return open_ports
 # sends file over ssl to server
 def send_file(filepath, hostname, ports):
-    filename = os.path.basename(filepath)
-    filesize = os.path.getsize(filepath)
     context = ssl.SSLContext(ssl.PROTOCOL_SSLv23)
     print(certifi.where())
     context.load_verify_locations(certifi.where())
@@ -48,7 +46,6 @@ def send_file(filepath, hostname, ports):
                                      suppress_ragged_eofs=True
                                      ) as c:
                 cert_chain = c.getpeercert(True)
-                print(f'{cert_chain}')
                 v = c.version()
                 if v:
                     print(f"SSL Version is {v}")
@@ -63,7 +60,7 @@ def send_file(filepath, hostname, ports):
                     print(f"Error sending file: {e}")
                 while True:
                     recv_data = c.recv(BUFFER_SIZE)
-                    if(recv_data is b''):
+                    if(recv_data == b''):
                         c.close()
                         break
                     print(recv_data.decode())
@@ -101,7 +98,8 @@ def main():
     valid_filepath = False
     if args.hostname:
         valid_hostname = check_hostname(args.hostname)
-        hostname = args.hostname
+        if valid_hostname:
+            hostname = args.hostname
     else:
         if check_hostname('localhost'):
             hostname = 'localhost'
@@ -113,9 +111,14 @@ def main():
     else:
         print(f"{args.filepath} does not point to an actual file...")
     if args.ll and args.ul:
-        ports = scan_ports(hostname, args.ll, args.ul)
-        if valid_filepath:
-            send_file(args.filepath, hostname, ports)
+        if(args.ll < args.ul):
+            ports = scan_ports(hostname, args.ll, args.ul)
+            if valid_filepath:
+                send_file(args.filepath, hostname, ports)
+            else:
+                print(f"{args.filepath} is not a valid path to your file...")
+        else:
+            print("Lower limit must be less than upper limit...")
     elif args.ll and not args.ul or not args.ll and args.ul:
         print("Needs both an upper and lower limit to scan ports...")
 if __name__== '__main__':
