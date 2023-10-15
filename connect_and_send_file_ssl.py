@@ -36,6 +36,8 @@ def scan_ports(hostname, ll, ul):
     return open_ports
 # sends file over ssl to server
 def send_file(filepath, hostname, ports):
+    # for my application of this script, I am unable to use the undeprecated
+    # constant PROTOCOL_TLS_CLIENT, so this will have to suffice
     context = ssl.SSLContext(ssl.PROTOCOL_TLS)
     print(certifi.where())
     context.load_verify_locations(certifi.where())
