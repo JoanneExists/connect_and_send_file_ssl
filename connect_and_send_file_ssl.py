@@ -56,7 +56,7 @@ def send_file(filepath, hostname, ports):
                             bytes_to_send = f.read(BUFFER_SIZE)
                             if not bytes_to_send:
                                 break
-                            c.sendall(bytes_to_send)
+                            c.send(bytes_to_send)
                 except ssl.SSLError as e:
                     print(f"Error sending file: {e}")
                 while True:
@@ -94,7 +94,7 @@ def main():
     # calls function that parses command line args
     args = create_parser()
     hostname = ''
-    # assumes no valid hostname is provided until tested
+    # assumes no valid hostname or filepath is provided until tested
     valid_hostname = False
     valid_filepath = False
     if args.hostname:
@@ -111,7 +111,7 @@ def main():
         pass
     else:
         print(f"{args.filepath} does not point to an actual file...")
-    if args.ll and args.ul:
+    if args.ll and args.ul:   
         if(args.ll < args.ul):
             ports = scan_ports(hostname, args.ll, args.ul)
             if valid_filepath:
