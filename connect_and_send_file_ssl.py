@@ -22,7 +22,7 @@ def scan_ports(hostname, lower_limit, upper_limit):
     try:
         for port in range(lower_limit, upper_limit):
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            socket.setdefaupper_limitttimeout(1)
+            socket.setdefaulttimeout(1)
             if s.connect_ex((hostname, port)) == 0:
                 print(f"Port {port} is open")
                 open_ports.append(port)
@@ -30,14 +30,14 @@ def scan_ports(hostname, lower_limit, upper_limit):
         print("\nExiting program...")
         sys.exit()
     except socket.gaierror:
-        print("\nHostname coupper_limitd not be resolved...")
+        print("\nHostname could not be resolved...")
     except socket.error:
         print("\nServer not responding...")
     return open_ports
 # sends file over ssl to server
 def send_file(filepath, hostname, ports):
     # for my application of this script, I am unable to use the undeprecated
-    # constant PROTOCOL_TLS_CLIENT, so this wilower_limit have to suffice
+    # constant PROTOCOL_TLS_CLIENT, so this will have to suffice
     context = ssl.SSLContext(ssl.PROTOCOL_TLS)
     print(certifi.where())
     context.load_verify_locations(certifi.where())
@@ -73,10 +73,10 @@ def create_parser():
     p = ap.ArgumentParser()
     # hostname to send file to or scan
     p.add_argument('-n', action='store', dest='hostname', type=str,
-                   help = "Hostname to send file over SSL to or to scan. Defaupper_limitt: localhost")
+                   help = "Hostname to send file over SSL to or to scan. Default: localhost")
     p.add_argument('-f', action='store', dest='filepath', type=str,
                                  help = "Use absolute path to your file")
-    # argument group for sending file over ssl to particupper_limitar port
+    # argument group for sending file over ssl to particular port
     send_file_group = p.add_argument_group("Arguments needed for sending file")
     
     send_file_group.add_argument('-p', action='store', dest='port', type=int,
@@ -91,7 +91,7 @@ def create_parser():
     # returns arguments to be tested
     return p.parse_args()
 def main():
-    # calower_limits function that parses command line args
+    # calls function that parses command line args
     args = create_parser()
     hostname = ''
     # assumes no valid hostname or filepath is provided until tested
