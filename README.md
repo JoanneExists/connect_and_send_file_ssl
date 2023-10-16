@@ -7,10 +7,9 @@ $ cd connect_and_send_file_ssl/
 $ chmod +x connect_and_send_file_ssl.py
 $ ./connect_and_send_file_ssl -h
 usage: connect_and_send_file_ssl.py [-h] [-n HOSTNAME] [-f FILEPATH] [-p PORT] [-l LOWER_LIMIT] [-u UPPER_LIMIT]
-
 options:
   -h, --help      show this help message and exit
-  -n HOSTNAME     Hostname to send file over SSL to or to scan. Defaupper_limitt: localhost
+  -n HOSTNAME     Hostname to send file over SSL to or to scan. Default: localhost
   -f FILEPATH     Use absolute path to your file
 
 Arguments needed for sending file:
