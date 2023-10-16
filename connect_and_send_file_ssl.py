@@ -16,13 +16,13 @@ def check_hostname(hostname):
     except socket.gaierror as e:
         print(f"Error resolving  {hostname}: {e}")
         return False
-# scans for open ports in a given range ll & ul
-def scan_ports(hostname, ll, ul):
+# scans for open ports in a given range lower_limit & upper_limit
+def scan_ports(hostname, lower_limit, upper_limit):
     open_ports = []
     try:
-        for port in range(ll, ul):
+        for port in range(lower_limit, upper_limit):
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            socket.setdefaulttimeout(1)
+            socket.setdefaupper_limitttimeout(1)
             if s.connect_ex((hostname, port)) == 0:
                 print(f"Port {port} is open")
                 open_ports.append(port)
@@ -30,14 +30,14 @@ def scan_ports(hostname, ll, ul):
         print("\nExiting program...")
         sys.exit()
     except socket.gaierror:
-        print("\nHostname could not be resolved...")
+        print("\nHostname coupper_limitd not be resolved...")
     except socket.error:
         print("\nServer not responding...")
     return open_ports
 # sends file over ssl to server
 def send_file(filepath, hostname, ports):
     # for my application of this script, I am unable to use the undeprecated
-    # constant PROTOCOL_TLS_CLIENT, so this will have to suffice
+    # constant PROTOCOL_TLS_CLIENT, so this wilower_limit have to suffice
     context = ssl.SSLContext(ssl.PROTOCOL_TLS)
     print(certifi.where())
     context.load_verify_locations(certifi.where())
@@ -73,10 +73,10 @@ def create_parser():
     p = ap.ArgumentParser()
     # hostname to send file to or scan
     p.add_argument('-n', action='store', dest='hostname', type=str,
-                   help = "Hostname to send file over SSL to or to scan. Default: localhost")
+                   help = "Hostname to send file over SSL to or to scan. Defaupper_limitt: localhost")
     p.add_argument('-f', action='store', dest='filepath', type=str,
                                  help = "Use absolute path to your file")
-    # argument group for sending file over ssl to particular port
+    # argument group for sending file over ssl to particupper_limitar port
     send_file_group = p.add_argument_group("Arguments needed for sending file")
     
     send_file_group.add_argument('-p', action='store', dest='port', type=int,
@@ -84,14 +84,14 @@ def create_parser():
     
     # lower and upper limit of ports to scan
     port_scan_group = p.add_argument_group("Arguments -l and -u for port scanning")
-    port_scan_group.add_argument('-l', action='store', dest='ll', type=int,
+    port_scan_group.add_argument('-l', action='store', dest='lower_limit', type=int,
                                  help = "Lower limit to port scan")
-    port_scan_group.add_argument('-u', action='store', dest='ul', type=int,
+    port_scan_group.add_argument('-u', action='store', dest='upper_limit', type=int,
                                  help = "Upper limit to port scan")
     # returns arguments to be tested
     return p.parse_args()
 def main():
-    # calls function that parses command line args
+    # calower_limits function that parses command line args
     args = create_parser()
     hostname = ''
     # assumes no valid hostname or filepath is provided until tested
@@ -111,16 +111,16 @@ def main():
         pass
     else:
         print(f"{args.filepath} does not point to an actual file...")
-    if args.ll and args.ul:   
-        if(args.ll < args.ul):
-            ports = scan_ports(hostname, args.ll, args.ul)
+    if args.lower_limit and args.upper_limit:   
+        if(args.lower_limit < args.upper_limit):
+            ports = scan_ports(hostname, args.lower_limit, args.upper_limit)
             if valid_filepath:
                 send_file(args.filepath, hostname, ports)
             else:
                 print(f"{args.filepath} is not a valid path to your file...")
         else:
             print("Lower limit must be less than upper limit...")
-    elif args.ll and not args.ul or not args.ll and args.ul:
+    elif args.lower_limit and not args.upper_limit or not args.lower_limit and args.upper_limit:
         print("Needs both an upper and lower limit to scan ports...")
 if __name__== '__main__':
     main()
